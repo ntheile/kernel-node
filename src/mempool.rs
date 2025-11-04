@@ -266,6 +266,10 @@ pub trait Mempool {
     ///
     /// # Returns
     /// * Map of transaction IDs to mempool entries
+    ///
+    /// # Note
+    /// This returns owned data which may require cloning for large mempools.
+    /// Implementations may optimize this by using reference-counted pointers internally.
     fn get_all_transactions(&self) -> HashMap<Txid, MempoolEntry>;
     
     /// Get transactions with fee rate above a threshold
@@ -275,6 +279,9 @@ pub trait Mempool {
     ///
     /// # Returns
     /// * Vector of mempool entries matching the criteria
+    ///
+    /// # Note
+    /// Returns owned data. For large result sets, consider using iteration or pagination.
     fn get_transactions_by_fee_rate(&self, min_fee_rate: FeeRate) -> Vec<MempoolEntry>;
     
     /// Get current mempool statistics
@@ -341,6 +348,9 @@ pub trait MempoolExtended: Mempool {
     ///
     /// # Returns
     /// * Vector of matching mempool entries
+    ///
+    /// # Note
+    /// Returns owned data. Use the `limit` field in MempoolQuery to control result size.
     fn query(&self, query: MempoolQuery) -> Vec<MempoolEntry>;
     
     /// Get descendant transactions (transactions that depend on this one)
